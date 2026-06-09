@@ -79,4 +79,41 @@ class PageController extends Controller
 
         return view('post', compact('post'));
     }
+
+    public function fixtures()
+    {
+        // Get fixtures ordered by date
+        $fixtures = \App\Models\Fixture::orderBy('match_time', 'asc')->get();
+
+        // Group fixtures by formatted date string
+        $groupedFixtures = $fixtures->groupBy(function($fixture) {
+            return \Carbon\Carbon::parse($fixture->match_time)->format('Y-m-d');
+        });
+
+        return view('fixtures.index', compact('groupedFixtures'));
+    }
+
+    public function showFixture($id)
+    {
+        $fixture = \App\Models\Fixture::findOrFail($id);
+        
+        $streamProvider = $fixture->stream_provider ?: Setting::get('stream_provider', 'standard');
+        $owncastUrl     = $fixture->owncast_url ?: Setting::get('owncast_url');
+        $owncastChat    = $fixture->owncast_chat_enabled ?? Setting::get('owncast_chat_enabled', '0');
+
+        return view('fixtures.show', [
+            'fixture'            => $fixture,
+            'streamProvider'     => $streamProvider,
+            'owncastUrl'         => $owncastUrl,
+            'owncastChatEnabled' => $owncastChat === '1' || $owncastChat === 1 || $owncastChat === true,
+        ]);
+    }
+
+    public function standings(\App\Services\StandingsService $standingsService)
+    {
+        $groups = $standingsService->calculateGroupStandings();
+        $bracket = $standingsService->getKnockoutBracket();
+
+        return view('standings', compact('groups', 'bracket'));
+    }
 }

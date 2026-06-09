@@ -34,6 +34,10 @@ Route::post('/admin/logout', [AdminAuthController::class, 'logout'])->name('admi
 
 Route::middleware(['admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+    
+    // Admin Fixtures
+    Route::get('/fixtures-scores', [\App\Http\Controllers\Admin\FixtureController::class, 'index'])->name('fixtures.scores.index');
+    Route::put('/fixtures/{id}/score', [\App\Http\Controllers\Admin\FixtureController::class, 'updateScore'])->name('fixtures.updateScore');
 
     // Blog Posts
     Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
@@ -46,4 +50,19 @@ Route::middleware(['admin'])->prefix('admin')->name('admin.')->group(function ()
     // Settings
     Route::get('/settings', [SettingsController::class, 'edit'])->name('settings');
     Route::post('/settings', [SettingsController::class, 'update'])->name('settings.update');
+
+    // Fixtures
+    Route::post('/fixtures/auto-pull', [App\Http\Controllers\FixtureController::class, 'autoPull'])->name('fixtures.auto-pull');
+    Route::post('/fixtures/clear-all', [App\Http\Controllers\FixtureController::class, 'clearAll'])->name('fixtures.clear-all');
+    Route::post('/fixtures/{id}/generate-content', [App\Http\Controllers\FixtureController::class, 'generateContent'])->name('fixtures.generate-content');
+    Route::get('/fixtures', [App\Http\Controllers\FixtureController::class, 'index'])->name('fixtures.index');
+    Route::get('/fixtures/create', [App\Http\Controllers\FixtureController::class, 'create'])->name('fixtures.create');
+    Route::post('/fixtures', [App\Http\Controllers\FixtureController::class, 'store'])->name('fixtures.store');
+    Route::get('/fixtures/{id}/edit', [App\Http\Controllers\FixtureController::class, 'edit'])->name('fixtures.edit');
+    Route::put('/fixtures/{id}', [App\Http\Controllers\FixtureController::class, 'update'])->name('fixtures.update');
+    Route::delete('/fixtures/{id}', [App\Http\Controllers\FixtureController::class, 'destroy'])->name('fixtures.destroy');
 });
+
+Route::get('/fixtures', [PageController::class, 'fixtures'])->name('fixtures.list');
+Route::get('/fixtures/{id}', [PageController::class, 'showFixture'])->name('fixtures.show');
+Route::get('/standings', [PageController::class, 'standings'])->name('standings');

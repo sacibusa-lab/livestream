@@ -80,6 +80,10 @@
             <div class="flex items-center gap-3 sm:gap-5 text-sm font-medium">
                 <a href="{{ route('home') }}"
                    class="text-gray-300 hover:text-white transition-colors duration-200 hidden sm:inline">Home</a>
+                <a href="{{ route('fixtures.list') }}"
+                   class="text-gray-300 hover:text-white transition-colors duration-200 hidden sm:inline">Fixtures</a>
+                <a href="{{ route('standings') }}"
+                   class="text-gray-300 hover:text-white transition-colors duration-200 hidden sm:inline">Standings</a>
 
                 @auth('admin')
                     <a href="{{ route('admin.dashboard') }}"

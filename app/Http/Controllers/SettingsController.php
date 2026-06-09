@@ -15,6 +15,7 @@ class SettingsController extends Controller
         $streamProvider = Setting::get('stream_provider', 'standard');
         $owncastUrl     = Setting::get('owncast_url');
         $owncastChat    = Setting::get('owncast_chat_enabled', '0');
+        $openrouterKey  = Setting::get('openrouter_api_key');
 
         $streamData = $this->parseLivestreamUrl($livestreamUrl);
 
@@ -27,6 +28,7 @@ class SettingsController extends Controller
             'streamProvider'     => $streamProvider,
             'owncastUrl'         => $owncastUrl,
             'owncastChatEnabled' => $owncastChat,
+            'openrouterApiKey'   => $openrouterKey,
         ]);
     }
 
@@ -74,6 +76,7 @@ class SettingsController extends Controller
             'owncast_chat_enabled' => ['nullable', 'boolean'],
             'site_title'           => ['nullable', 'string', 'max:100'],
             'site_description'     => ['nullable', 'string', 'max:255'],
+            'openrouter_api_key'   => ['nullable', 'string', 'max:255'],
         ]);
 
         Setting::set('stream_provider', $request->input('stream_provider', 'standard'));
@@ -82,6 +85,7 @@ class SettingsController extends Controller
         Setting::set('owncast_chat_enabled', $request->has('owncast_chat_enabled') ? '1' : '0');
         Setting::set('site_title', $request->input('site_title', '2026WORLDCUP.com.ng'));
         Setting::set('site_description', $request->input('site_description', 'Your home for live World Cup 2026 coverage.'));
+        Setting::set('openrouter_api_key', $request->input('openrouter_api_key'));
 
         return redirect()->route('admin.settings')
             ->with('success', 'Settings updated successfully.');

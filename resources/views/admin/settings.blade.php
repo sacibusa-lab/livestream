@@ -6,30 +6,30 @@
 @section('content')
 <div class="max-w-2xl space-y-6">
 
-    {{-- Livestream Settings --}}
-    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 sm:p-8">
-        <div class="flex items-center gap-3 mb-6">
-            <div class="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center shrink-0">
-                <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.069A1 1 0 0121 8.87v6.26a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
-                </svg>
-            </div>
-            <div>
-                <h2 class="font-semibold text-gray-900">Livestream & Site Settings</h2>
-                <p class="text-gray-500 text-sm">Manage your livestream embed and site metadata.</p>
-            </div>
-        </div>
+    <form method="POST" action="{{ route('admin.settings.update') }}" id="settings-form">
+        @csrf
 
-        <form method="POST" action="{{ route('admin.settings.update') }}" id="settings-form">
-            @csrf
+        @if($errors->any())
+            <div class="mb-5 bg-red-50 border border-red-200 rounded-lg p-4">
+                @foreach($errors->all() as $error)
+                    <p class="text-red-600 text-sm">• {{ $error }}</p>
+                @endforeach
+            </div>
+        @endif
 
-            @if($errors->any())
-                <div class="mb-5 bg-red-50 border border-red-200 rounded-lg p-4">
-                    @foreach($errors->all() as $error)
-                        <p class="text-red-600 text-sm">• {{ $error }}</p>
-                    @endforeach
+        {{-- Segment 1: Livestream Settings --}}
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 sm:p-8 mb-6">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center shrink-0">
+                    <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.069A1 1 0 0121 8.87v6.26a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                    </svg>
                 </div>
-            @endif
+                <div>
+                    <h2 class="font-semibold text-gray-900">Livestream Settings</h2>
+                    <p class="text-gray-500 text-sm">Manage your default livestream embed for the homepage.</p>
+                </div>
+            </div>
 
             <div class="space-y-5">
                 {{-- Stream Provider --}}
@@ -60,8 +60,8 @@
                         <div class="mt-2 p-3 bg-blue-50 border border-blue-100 rounded-lg text-xs text-blue-700 space-y-1">
                             <p class="font-semibold">Supported Streaming Formats:</p>
                             <ul class="list-disc list-inside space-y-0.5 text-blue-600">
-                                <li><strong>YouTube:</strong> Paste any standard, share, or live URL (e.g., <code class="bg-blue-100 px-1 rounded">https://www.youtube.com/watch?v=ID</code> or <code class="bg-blue-100 px-1 rounded">https://youtu.be/ID</code>)</li>
-                                <li><strong>OBS / Custom Stream:</strong> Paste your HLS playlist URL (e.g., <code class="bg-blue-100 px-1 rounded">https://server.com/live/stream.m3u8</code>). It will play inside a premium, custom player.</li>
+                                <li><strong>YouTube:</strong> Paste any standard, share, or live URL</li>
+                                <li><strong>OBS / Custom Stream:</strong> Paste your HLS playlist URL</li>
                             </ul>
                         </div>
                     </div>
@@ -94,10 +94,24 @@
                         </label>
                     </div>
                 </div>
+            </div>
+        </div>
 
-                {{-- Divider --}}
-                <hr class="border-gray-100">
+        {{-- Segment 2: Site Information --}}
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 sm:p-8 mb-6">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center shrink-0">
+                    <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h2 class="font-semibold text-gray-900">Site Information</h2>
+                    <p class="text-gray-500 text-sm">Manage the basic details of your site.</p>
+                </div>
+            </div>
 
+            <div class="space-y-5">
                 {{-- Site Title --}}
                 <div>
                     <label for="site_title" class="block text-sm font-semibold text-gray-700 mb-1.5">Site Title</label>
@@ -124,22 +138,54 @@
                               class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm text-gray-800 focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500 outline-none transition-all resize-none">{{ old('site_description', $siteDesc) }}</textarea>
                 </div>
             </div>
+        </div>
 
-            <div class="mt-6 pt-5 border-t border-gray-100 flex items-center gap-3">
-                <button type="submit"
-                        id="settings-submit"
-                        class="inline-flex items-center gap-2 bg-orange-600 hover:bg-orange-500 text-white font-semibold px-6 py-3 rounded-lg text-sm transition-all shadow-sm">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                    Save Settings
-                </button>
-                <a href="{{ route('home') }}" target="_blank"
-                   class="text-sm text-gray-500 hover:text-gray-700 transition-colors flex items-center gap-1">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
-                    Preview on Site
-                </a>
+        {{-- Segment 3: API Integrations --}}
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 sm:p-8 mb-6">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 rounded-full bg-purple-50 flex items-center justify-center shrink-0">
+                    <svg class="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
+                    </svg>
+                </div>
+                <div>
+                    <h2 class="font-semibold text-gray-900">API Integrations</h2>
+                    <p class="text-gray-500 text-sm">Configure external services and AI tools.</p>
+                </div>
             </div>
-        </form>
-    </div>
+
+            <div class="space-y-5">
+                {{-- OpenRouter API Key --}}
+                <div>
+                    <label for="openrouter_api_key" class="block text-sm font-semibold text-gray-700 mb-1.5">
+                        OpenRouter API Key
+                    </label>
+                    <input type="password"
+                           id="openrouter_api_key"
+                           name="openrouter_api_key"
+                           value="{{ old('openrouter_api_key', $openrouterApiKey ?? '') }}"
+                           placeholder="sk-or-v1-..."
+                           class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm text-gray-800 focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500 outline-none transition-all">
+                    <p class="text-xs text-gray-500 mt-1">Required to automatically pull fixtures using AI.</p>
+                </div>
+            </div>
+        </div>
+
+        {{-- Save Button --}}
+        <div class="flex items-center gap-3">
+            <button type="submit"
+                    id="settings-submit"
+                    class="inline-flex items-center gap-2 bg-orange-600 hover:bg-orange-500 text-white font-semibold px-6 py-3 rounded-lg text-sm transition-all shadow-sm">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                Save Settings
+            </button>
+            <a href="{{ route('home') }}" target="_blank"
+               class="text-sm text-gray-500 hover:text-gray-700 transition-colors flex items-center gap-1">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                Preview on Site
+            </a>
+        </div>
+    </form>
 
     {{-- Current livestream preview --}}
     @if(($streamProvider === 'standard' && $livestreamUrl) || ($streamProvider === 'owncast' && $owncastUrl))
