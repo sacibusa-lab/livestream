@@ -85,24 +85,7 @@
                 <a href="{{ route('standings') }}"
                    class="text-gray-300 hover:text-white transition-colors duration-200 hidden sm:inline">Standings</a>
 
-                @auth('admin')
-                    <a href="{{ route('admin.dashboard') }}"
-                       class="text-gray-300 hover:text-brand-500 transition-colors duration-200">
-                        Dashboard
-                    </a>
-                    <form method="POST" action="{{ route('admin.logout') }}" class="inline">
-                        @csrf
-                        <button type="submit"
-                                class="text-gray-400 hover:text-red-400 transition-colors duration-200 text-sm">
-                            Logout
-                        </button>
-                    </form>
-                @else
-                    <a href="{{ route('admin.login') }}"
-                       class="text-gray-400 hover:text-white transition-colors duration-200 text-xs uppercase tracking-widest">
-                        Admin
-                    </a>
-                @endauth
+                
             </div>
         </nav>
     </header>
